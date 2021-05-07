@@ -1,0 +1,24 @@
+version: '3'
+
+services: 
+    mysql:
+        image: mysql
+        environment: 
+            - MYSQL_ROOT_PASSWORD=1234
+            - MYSQL_DATABASE=obo
+        volumes: 
+            - mysql-data:/var/lib/mysql
+            - ./obo.sql:/docker-entrypoint-initdb.d/init.sql
+        ports:
+            - 33060:3306
+    web:
+        # image: obo-spring:latest
+        build: ./
+        tty: true
+        ports: 
+            - "8005:8080"
+        depends_on: 
+            - mysql
+
+volumes: 
+    mysql-data:
