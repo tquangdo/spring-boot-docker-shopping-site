@@ -1,15 +1,22 @@
-### OBO STADIUM WEBSITE
+# OBO STADIUM WEBSITE
 Trang thương mại điện tử bán giày
 
-### Chạy app bằng maven
+## deploy local
 
-```shell
-mvn spring-boot:run
-```
+1. `docker compose up -d --build`
+2. access browser `localhost:8005`
+![demo](screenshot/demo.png)
 
-### Mockup dữ liệu ban đầu
+![list](screenshot/list.png)
 
-Import file ```obo.sql``` vào MySQL. Sử dụng 2 account sau để đăng nhập vào web:
+## db info
+- `src/main/resources/application-dev.properties`
+![db](screenshot/db.png)
+
+## API info
+- in `src/main/java/com/company/demo/controller/anonymous/*Controller.java` > `@GetMapping("/...`
+
+## login acc
 
 - Admin account:
     - Username: admin@obostadium.com
@@ -18,9 +25,6 @@ Import file ```obo.sql``` vào MySQL. Sử dụng 2 account sau để đăng nh�
     - Username: monguyen@gmail.com
     - Password: 123456
     
+## admin page
 
-Truy cập ```/admin``` để vào trang admin.
-
-### Built with
-- [Java Spring](https://spring.io/) - The web framework used
-- [Maven](https://mvnrepository.com/) - Dependency Management
+- Truy cập `/admin` để vào trang admin.

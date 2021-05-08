@@ -6,13 +6,14 @@ services:
         environment: 
             - MYSQL_ROOT_PASSWORD=1234
             - MYSQL_DATABASE=obo
+            - MYSQL_USER=admin
+            - MYSQL_PASSWORD=123456
         volumes: 
             - mysql-data:/var/lib/mysql
             - ./obo.sql:/docker-entrypoint-initdb.d/init.sql
         ports:
             - 33060:3306
     web:
-        # image: obo-spring:latest
         build: ./
         tty: true
         ports: 
