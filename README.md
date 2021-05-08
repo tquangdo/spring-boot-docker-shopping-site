@@ -1,8 +1,7 @@
 # OBO STADIUM WEBSITE
-Trang thương mại điện tử bán giày
+shopping site for shoes
 
 ## deploy local
-
 1. `docker compose up -d --build`
 2. access browser `localhost:8005`
 ![demo](screenshot/demo.png)
@@ -14,10 +13,9 @@ Trang thương mại điện tử bán giày
 ![db](screenshot/db.png)
 
 ## API info
-- in `src/main/java/com/company/demo/controller/anonymous/*Controller.java` > `@GetMapping("/...`
+- in `src/main/java/com/company/demo/controller/anonymous/*Controller.java` > `@GetMapping("/...")`
 
 ## login acc
-
 - Admin account:
     - Username: admin@obostadium.com
     - Password: 123456
@@ -26,5 +24,7 @@ Trang thương mại điện tử bán giày
     - Password: 123456
     
 ## admin page
+- access browser `localhost:8005/admin`
 
-- Truy cập `/admin` để vào trang admin.
+## note
+- due to `Dockerfile` > `ENTRYPOINT ["/usr/local/bin/run_spring_boot_entrypoint.sh"]`, after edit docker info need `--build` & need wait until run spring boot finish
