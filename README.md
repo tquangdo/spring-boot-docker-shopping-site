@@ -1,7 +1,7 @@
 # OBO STADIUM WEBSITE
 
 - shopping site for shoes
-[![Report an issue](https://img.shields.io/badge/Support-Issues-green)](https://github.com/tquangdo/spring-boot-docker-shopping-site/issues/new)
+- [![Report an issue](https://img.shields.io/badge/Support-Issues-green)](https://github.com/tquangdo/spring-boot-docker-shopping-site/issues/new)
 
 ## deploy local
 1. `docker compose up -d --build`
