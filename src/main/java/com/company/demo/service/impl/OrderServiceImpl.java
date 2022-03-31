@@ -75,7 +75,8 @@ public class OrderServiceImpl implements OrderService {
             if (promotionPrice != req.getTotalPrice()) {
                 throw new BadRequestException("Tổng giá trị đơn hàng thay đổi. Vui lòng kiểm tra và đặt lại đơn hàng");
             }
-            Order.UsedPromotion usedPromotion = new Order.UsedPromotion(req.getCouponCode(), promotion.getDiscountType(), promotion.getDiscountValue(), promotion.getMaximumDiscountValue());
+            Order.UsedPromotion usedPromotion = new Order.UsedPromotion(req.getCouponCode(),
+                    promotion.getDiscountType(), promotion.getDiscountValue(), promotion.getMaximumDiscountValue());
             order.setPromotion(usedPromotion);
         }
 
@@ -106,7 +107,7 @@ public class OrderServiceImpl implements OrderService {
         List<OrderInfoDto> list = orderRepository.getListOrderOfPersonByStatus(status, userId);
 
         for (OrderInfoDto order : list) {
-            for (int i=0; i<SIZE_VN.size(); i++) {
+            for (int i = 0; i < SIZE_VN.size(); i++) {
                 if (SIZE_VN.get(i) == order.getSizeVn()) {
                     order.setSizeUs(SIZE_US[i]);
                     order.setSizeCm(SIZE_CM[i]);
@@ -136,7 +137,7 @@ public class OrderServiceImpl implements OrderService {
             order.setStatusText("Đã trả hàng");
         }
 
-        for (int i=0; i<SIZE_VN.size(); i++) {
+        for (int i = 0; i < SIZE_VN.size(); i++) {
             if (SIZE_VN.get(i) == order.getSizeVn()) {
                 order.setSizeUs(SIZE_US[i]);
                 order.setSizeCm(SIZE_CM[i]);
@@ -157,7 +158,8 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException("Bạn không phải chủ nhân đơn hàng");
         }
         if (order.getStatus() != ORDER_STATUS) {
-            throw new BadRequestException("Trạng thái đơn hàng không phù hợp để hủy. Vui lòng liên hệ với shop để được hỗ trợ");
+            throw new BadRequestException(
+                    "Trạng thái đơn hàng không phù hợp để hủy. Vui lòng liên hệ với shop để được hỗ trợ");
         }
 
         order.setStatus(CANCELED_STATUS);
@@ -165,7 +167,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<Order> adminGetListOrder(String id, String name, String phone, String status, String product, int page) {
+    public Page<Order> adminGetListOrder(String id, String name, String phone, String status, String product,
+            int page) {
         page--;
         if (page < 0) {
             page = 0;
@@ -182,7 +185,8 @@ public class OrderServiceImpl implements OrderService {
             product = "%%";
         }
 
-        Page<Order> rs = orderRepository.adminGetListOrder(id, name, phone, status, product, PageRequest.of(page, 10, Sort.by("created_at").descending()));
+        Page<Order> rs = orderRepository.adminGetListOrder(id, name, phone, status, product,
+                PageRequest.of(page, 10, Sort.by("created_at").descending()));
 
         return rs;
     }
@@ -235,7 +239,8 @@ public class OrderServiceImpl implements OrderService {
             if (promotionPrice != req.getTotalPrice()) {
                 throw new BadRequestException("Tổng giá trị đơn hàng thay đổi. Vui lòng kiểm tra và đặt lại đơn hàng");
             }
-            Order.UsedPromotion usedPromotion = new Order.UsedPromotion(req.getCouponCode(), promotion.getDiscountType(), promotion.getDiscountValue(), promotion.getMaximumDiscountValue());
+            Order.UsedPromotion usedPromotion = new Order.UsedPromotion(req.getCouponCode(),
+                    promotion.getDiscountType(), promotion.getDiscountValue(), promotion.getMaximumDiscountValue());
             order.setPromotion(usedPromotion);
         }
 
@@ -293,10 +298,8 @@ public class OrderServiceImpl implements OrderService {
                 order.setReceiverName(req.getReceiverName());
                 order.setReceiverAddress(req.getReceiverAddress());
             } else if (req.getStatus() == DELIVERY_STATUS) {
-                // TODO: Minus 1 product
                 productSizeRepository.minusOneProductBySize(order.getProduct().getId(), order.getSize());
             } else if (req.getStatus() == COMPLETE_STATUS) {
-                // TODO: Minus 1 product, Plus money
                 productSizeRepository.minusOneProductBySize(order.getProduct().getId(), order.getSize());
                 updateRevenue(modifiedBy, order.getTotalPrice(), order);
             } else if (req.getStatus() != CANCELED_STATUS) {
@@ -305,10 +308,8 @@ public class OrderServiceImpl implements OrderService {
         } else if (order.getStatus() == DELIVERY_STATUS) {
             // Đơn hàng cũ ở trạng thái đang giao hàng
             if (req.getStatus() == COMPLETE_STATUS) {
-                // TODO: Plus money
                 updateRevenue(modifiedBy, order.getTotalPrice(), order);
             } else if (req.getStatus() == RETURNED_STATUS) {
-                // TODO: Plus 1 product
                 productSizeRepository.plusOneProductBySize(order.getProduct().getId(), order.getSize());
             } else if (req.getStatus() == CANCELED_STATUS) {
 
@@ -318,7 +319,6 @@ public class OrderServiceImpl implements OrderService {
         } else if (order.getStatus() == COMPLETE_STATUS) {
             // Đơn hàng cũ ở trạng thái đã giao hàng
             if (req.getStatus() == RETURNED_STATUS) {
-                // TODO: Plus 1 product, Minus money
                 productSizeRepository.plusOneProductBySize(order.getProduct().getId(), order.getSize());
                 updateRevenue(modifiedBy, -order.getTotalPrice(), order);
             } else if (req.getStatus() != COMPLETE_STATUS) {

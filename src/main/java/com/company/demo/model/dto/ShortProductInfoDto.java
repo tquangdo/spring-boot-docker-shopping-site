@@ -20,7 +20,7 @@ public class ShortProductInfoDto {
     public ShortProductInfoDto(String id, String name) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        // this.price = price;
     }
 
     public ShortProductInfoDto(String id, String name, long price, Object availableSizes) {
@@ -30,7 +30,8 @@ public class ShortProductInfoDto {
         if (availableSizes != null) {
             ObjectMapper mapper = new ObjectMapper();
             try {
-                this.availableSizes = mapper.readValue((String) availableSizes, new TypeReference<List<Integer>>(){});
+                this.availableSizes = mapper.readValue((String) availableSizes, new TypeReference<List<Integer>>() {
+                });
             } catch (IOException e) {
                 this.availableSizes = null;
             }

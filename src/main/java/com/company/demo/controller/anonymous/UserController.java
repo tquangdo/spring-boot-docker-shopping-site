@@ -1,5 +1,15 @@
 package com.company.demo.controller.anonymous;
 
+import static com.company.demo.config.Constant.LIST_ORDER_STATUS;
+import static com.company.demo.config.Constant.MAX_AGE_COOKIE;
+import static com.company.demo.config.Constant.ORDER_STATUS;
+
+import java.util.List;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
 import com.company.demo.entity.User;
 import com.company.demo.exception.BadRequestException;
 import com.company.demo.model.dto.OrderDetailDto;
@@ -13,8 +23,7 @@ import com.company.demo.security.CustomUserDetails;
 import com.company.demo.security.JwtTokenUtil;
 import com.company.demo.service.OrderService;
 import com.company.demo.service.UserService;
-import lombok.Getter;
-import org.dom4j.rule.Mode;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,14 +33,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.util.List;
-
-import static com.company.demo.config.Constant.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserController {
@@ -57,7 +63,7 @@ public class UserController {
         String token = jwtTokenUtil.generateToken(principal);
 
         // Add token to cookie to login
-        Cookie cookie = new Cookie("JWT_TOKEN",token);
+        Cookie cookie = new Cookie("JWT_TOKEN", token);
         cookie.setMaxAge(MAX_AGE_COOKIE);
         cookie.setPath("/");
         response.addCookie(cookie);
@@ -72,9 +78,7 @@ public class UserController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             req.getEmail(),
-                            req.getPassword()
-                    )
-            );
+                            req.getPassword()));
 
             // Gen token
             String token = jwtTokenUtil.generateToken((CustomUserDetails) authentication.getPrincipal());
@@ -85,7 +89,8 @@ public class UserController {
             cookie.setPath("/");
             response.addCookie(cookie);
 
-            return ResponseEntity.ok(UserMapper.toUserDto(((CustomUserDetails) authentication.getPrincipal()).getUser()));
+            return ResponseEntity
+                    .ok(UserMapper.toUserDto(((CustomUserDetails) authentication.getPrincipal()).getUser()));
         } catch (Exception ex) {
             throw new BadRequestException("Email hoặc mật khẩu không chính xác");
         }
@@ -99,7 +104,8 @@ public class UserController {
     @GetMapping("/tai-khoan/lich-su-giao-dich")
     public String getOrderHistoryPage(Model model) {
         // Get list order pending
-        User user = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
+        User user = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .getUser();
         List<OrderInfoDto> orders = orderService.getListOrderOfPersonByStatus(ORDER_STATUS, user.getId());
         model.addAttribute("orders", orders);
 
@@ -113,7 +119,8 @@ public class UserController {
             throw new BadRequestException("Trạng thái đơn hàng không hợp lệ");
         }
 
-        User user = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
+        User user = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .getUser();
         List<OrderInfoDto> orders = orderService.getListOrderOfPersonByStatus(status, user.getId());
 
         return ResponseEntity.ok(orders);
@@ -121,7 +128,8 @@ public class UserController {
 
     @GetMapping("/tai-khoan/lich-su-giao-dich/{id}")
     public String getDetailOrderPage(Model model, @PathVariable int id) {
-        User user = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
+        User user = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .getUser();
 
         OrderDetailDto order = orderService.userGetDetailById(id, user.getId());
         if (order == null) {
@@ -140,7 +148,8 @@ public class UserController {
 
     @PostMapping("/api/cancel-order/{id}")
     public ResponseEntity<?> cancelOrder(@PathVariable long id) {
-        User user = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
+        User user = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .getUser();
 
         orderService.userCancelOrder(id, user.getId());
 
@@ -149,7 +158,8 @@ public class UserController {
 
     @PostMapping("/api/change-password")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordReq req) {
-        User user = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
+        User user = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .getUser();
 
         userService.changePassword(user, req);
         return ResponseEntity.ok("Đổi mật khẩu thành công");
@@ -157,11 +167,13 @@ public class UserController {
 
     @PostMapping("/api/update-profile")
     public ResponseEntity<?> updateProfile(@Valid @RequestBody UpdateProfileReq req) {
-        User user = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
+        User user = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .getUser();
 
         user = userService.updateProfile(user, req);
         UserDetails principal = new CustomUserDetails(user);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null,
+                principal.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return ResponseEntity.ok("Cập nhật profile thành công");

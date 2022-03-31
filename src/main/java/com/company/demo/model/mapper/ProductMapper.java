@@ -1,14 +1,13 @@
 package com.company.demo.model.mapper;
 
+import java.util.ArrayList;
+
 import com.company.demo.entity.Brand;
 import com.company.demo.entity.Category;
 import com.company.demo.entity.Product;
 import com.company.demo.model.dto.DetailProductInfoDto;
-import com.company.demo.model.dto.ProductInfoDto;
 import com.company.demo.model.request.CreateProductReq;
 import com.github.slugify.Slugify;
-
-import java.util.ArrayList;
 
 public class ProductMapper {
     public static DetailProductInfoDto toDetailProductInfoDto(Product product) {
